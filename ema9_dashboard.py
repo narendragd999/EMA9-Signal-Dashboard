@@ -1,7 +1,7 @@
 """
-EMA9 Screener — Professional Dashboard v2.0
+EMA9 Screener — Professional Dashboard v2.1
 ============================================
-Enhanced UI · Efficient Rendering · WhatsApp Export
+Enhanced UI · Efficient Rendering · WhatsApp Export · Fixed Deploy Button
 
 Run:
     pip install streamlit pandas plotly requests yfinance gspread google-auth
@@ -64,8 +64,8 @@ html, body, [data-testid="stAppViewContainer"],
 /* Remove default padding */
 .block-container { padding: 1.5rem 2rem !important; max-width: 100% !important; }
 
-/* Hide streamlit chrome */
-//#MainMenu, footer, header { visibility: hidden; }
+/* Hide streamlit footer and main menu, but KEEP header for deploy button */
+#MainMenu, footer { visibility: hidden; }
 
 /* ── HEADER ── */
 .dash-header {
@@ -697,7 +697,7 @@ def generate_single_ticker_whatsapp(row: dict) -> str:
 
 
 # ═══════════════════════════════════════════════════════════════
-#  COPY BUTTON COMPONENT (JS-based clipboard)
+#  COPY BUTTON COMPONENT
 # ═══════════════════════════════════════════════════════════════
 _COPY_BTN_TEMPLATE = """
 <div style="text-align:center; padding:8px 0;">
@@ -765,7 +765,7 @@ def render_copy_button(text: str, key: str = "wa_copy"):
 
 
 # ═══════════════════════════════════════════════════════════════
-#  HTML TABLE BUILDER (Efficient single-render approach)
+#  HTML TABLE BUILDER
 # ═══════════════════════════════════════════════════════════════
 def trend_badge(t):
     if t == "UPTREND":   return '<span class="badge-up">↑ UP</span>'
@@ -1070,7 +1070,6 @@ with wa_col3:
 # Generate text with limit applied
 def generate_whatsapp_text_limited(df, fmt, include_all, limit):
     """Wrapper to apply trade limits."""
-    # Temporarily limit the data
     prime_d = df[df["type"] == "PRIME"].sort_values("fv_gap_pct", ascending=False).head(limit)
     other_d = df[df["type"] != "PRIME"].sort_values("fv_gap_pct", ascending=False).head(limit) if include_all else pd.DataFrame()
     limited_df = pd.concat([prime_d, other_d], ignore_index=True) if not other_d.empty else prime_d
@@ -1117,7 +1116,7 @@ st.markdown("---")
 
 
 # ═══════════════════════════════════════════════════════════════
-#  SIGNAL TABLE (Efficient HTML rendering)
+#  SIGNAL TABLE
 # ═══════════════════════════════════════════════════════════════
 st.markdown('<div class="section-title">🎯 Signal Table</div>', unsafe_allow_html=True)
 
@@ -1226,7 +1225,7 @@ st.markdown("""
 <div style="margin-top:40px;padding:16px;border-top:1px solid #1E2D45;
     display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
   <div style="font-size:0.72rem;color:#374151">
-    EMA9 Screener Dashboard v2.0 · Chartink + yfinance + Fair Value Engine
+    EMA9 Screener Dashboard v2.1 · Chartink + yfinance + Fair Value Engine
   </div>
   <div style="font-size:0.72rem;color:#374151">Auto-refreshes every 2 min · WhatsApp Export Ready</div>
 </div>
